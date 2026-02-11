@@ -1,6 +1,7 @@
 {
-	"languageMode": "strict",
-	"aliases": {
-		"vendor": "./vendor"
-	}
+  "languageMode": "strict",
+  "aliases": {
+    "vendor": "./vendor",
+    "lune": "~/.lune/.typedefs/0.10.4/"
+  }
 }

@@ -22,52 +22,56 @@ for _, dependency in fs.readDir "pkgs" do
 end
 
 print "installing"
-process.spawn("pesde", { "i" }, { stdio = "forward" })
+process.create("pesde", { "i" }, { stdio = "forward" })
 print "finished installing"
 
 type PesdeOverride = { name: string, version: string }
 type PesdePatch = { [string]: string }
-type PesdeDependency = | {
-	name: string,
-	wally: nil,
-	version: string,
-	index: string?,
-	target: string?,
-	repo: nil,
-	rev: nil,
-	path: nil,
-	workspace: nil,
-} | {
-	name: nil,
-	wally: string,
-	version: string,
-	index: string?,
-	target: nil,
-	repo: nil,
-	rev: nil,
-	path: nil,
-	workspace: nil,
-} | {
-	name: nil,
-	wally: nil,
-	version: nil,
-	index: nil,
-	target: nil,
-	repo: string,
-	rev: string,
-	path: string?,
-	workspace: nil,
-} | {
-	name: nil,
-	wally: nil,
-	version: string,
-	index: nil,
-	target: nil,
-	repo: nil,
-	rev: nil,
-	path: nil,
-	workspace: string,
-}
+type PesdeDependency =
+	| {
+		name: string,
+		wally: nil,
+		version: string,
+		index: string?,
+		target: string?,
+		repo: nil,
+		rev: nil,
+		path: nil,
+		workspace: nil,
+	}
+	| {
+		name: nil,
+		wally: string,
+		version: string,
+		index: string?,
+		target: nil,
+		repo: nil,
+		rev: nil,
+		path: nil,
+		workspace: nil,
+	}
+	| {
+		name: nil,
+		wally: nil,
+		version: nil,
+		index: nil,
+		target: nil,
+		repo: string,
+		rev: string,
+		path: string?,
+		workspace: nil,
+	}
+	| {
+		name: nil,
+		wally: nil,
+		version: string,
+		index: nil,
+		target: nil,
+		repo: nil,
+		rev: nil,
+		path: nil,
+		workspace: string,
+	}
 
 type PesdeToml = {
 	name: string,

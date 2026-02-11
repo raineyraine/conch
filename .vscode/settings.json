@@ -26,5 +26,5 @@
 		"editor.wordWrap": "bounded",
 		"editor.wordWrapColumn": 80
 	},
-	"luau-lsp.sourcemap.rojoProjectFile": "default.project.json"
+	"luau-lsp.sourcemap.rojoProjectFile": "example/default.project.json"
 }

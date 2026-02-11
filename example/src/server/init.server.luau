@@ -1,7 +1,7 @@
 local Players = game:GetService "Players"
 local ReplicatedStorage = game:GetService "ReplicatedStorage"
 
-local conch = require(ReplicatedStorage.packages.conch)
+local conch = require(ReplicatedStorage.roblox_packages.conch)
 
 conch.initiate_default_lifecycle()
 

@@ -1,0 +1,19 @@
+name = "alicesaidhi/conch_test"
+version = "0.1.0"
+license = "MIT"
+private = true
+
+[target]
+environment = "roblox"
+
+[indices]
+default = "https://github.com/pesde-pkg/index"
+
+[scripts]
+roblox_sync_config_generator = "../.pesde/scripts_rojo/roblox_sync_config_generator.luau"
+sourcemap_generator = "../.pesde/scripts_rojo/sourcemap_generator.luau"
+
+[dependencies]
+conch_ui = { workspace = "alicesaidhi/conch_ui", version = "^" }
+conch_language = { workspace = "alicesaidhi/conch_language", version = "^" }
+conch = { workspace = "alicesaidhi/conch", version = "^" }

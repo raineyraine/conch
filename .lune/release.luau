@@ -4,47 +4,51 @@ local serde = require "@lune/serde"
 
 type PesdeOverride = { name: string, version: string }
 type PesdePatch = { [string]: string }
-type PesdeDependency = | {
-	name: string,
-	wally: nil,
-	version: string,
-	index: string?,
-	target: string?,
-	repo: nil,
-	rev: nil,
-	path: nil,
-	workspace: nil,
-} | {
-	name: nil,
-	wally: string,
-	version: string,
-	index: string?,
-	target: nil,
-	repo: nil,
-	rev: nil,
-	path: nil,
-	workspace: nil,
-} | {
-	name: nil,
-	wally: nil,
-	version: nil,
-	index: nil,
-	target: nil,
-	repo: string,
-	rev: string,
-	path: string?,
-	workspace: nil,
-} | {
-	name: nil,
-	wally: nil,
-	version: string,
-	index: nil,
-	target: nil,
-	repo: nil,
-	rev: nil,
-	path: nil,
-	workspace: string,
-}
+type PesdeDependency =
+	| {
+		name: string,
+		wally: nil,
+		version: string,
+		index: string?,
+		target: string?,
+		repo: nil,
+		rev: nil,
+		path: nil,
+		workspace: nil,
+	}
+	| {
+		name: nil,
+		wally: string,
+		version: string,
+		index: string?,
+		target: nil,
+		repo: nil,
+		rev: nil,
+		path: nil,
+		workspace: nil,
+	}
+	| {
+		name: nil,
+		wally: nil,
+		version: nil,
+		index: nil,
+		target: nil,
+		repo: string,
+		rev: string,
+		path: string?,
+		workspace: nil,
+	}
+	| {
+		name: nil,
+		wally: nil,
+		version: string,
+		index: nil,
+		target: nil,
+		repo: nil,
+		rev: nil,
+		path: nil,
+		workspace: string,
+	}
 
 type PesdeToml = {
 	name: string,
@@ -337,11 +341,11 @@ local function link_npm_files(path: string)
 	if pesde_toml.private then return end
 
 	-- release on pesde first
-	process.spawn("pesde", { "publish --yes" }, {
-		cwd = path,
-		env = {},
-		shell = true,
-	})
+	-- process.spawn("pesde", { "publish --yes" }, {
+	-- 	cwd = path,
+	-- 	env = {},
+	-- 	shell = true,
+	-- })
 
 	local lib_file_path = pesde_toml.target.lib
 
@@ -553,25 +557,25 @@ for _, path in get_order() do
 	scanned_tomls[pesde_toml.name] = pesde_toml
 end
 
-process.spawn("pesde", { "i" })
+process.exec("pesde", { "i" })
 
 for _, path in get_order() do
 	print("Generating release for", path)
-	generate_wally_release_files(path)
-	local status = process.spawn("wally", { "publish" }, {
-		cwd = path,
-		env = {},
-		shell = true,
-	})
-	cleanup_files(path)
-	if status.ok == false then error(status.stderr) end
+	-- generate_wally_release_files(path)
+	-- local status = process.spawn("wally", { "publish" }, {
+	-- 	cwd = path,
+	-- 	env = {},
+	-- 	shell = true,
+	-- })
+	-- cleanup_files(path)
+	-- if status.ok == false then error(status.stderr) end
 
-	-- link_npm_files(path)
+	link_npm_files(path)
 	-- local status = process.spawn("pnpm", { "publish", "--access=public" }, {
 	-- 	cwd = path,
 	-- 	env = {},
 	-- 	shell = true,
 	-- })
-	cleanup_files(path)
-	if status.ok == false then error(status.stderr) end
+	-- cleanup_files(path)
+	-- if status.ok == false then error(status.stderr) end
 end

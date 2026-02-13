@@ -1,6 +1,7 @@
 **/luau_packages/
 **/lune_packages/
 **/roblox_packages/
+
 **/packages
 **/pesde.lock
 **/node_modules/
@@ -23,3 +24,7 @@ pkgs/_foreign_*
 **.rbxm
 
 todo
+
+# weird stuff so we can have the fork working with roblox-ts 
+!pkgs/**/dist
+!pkgs/**/dist/roblox_packages

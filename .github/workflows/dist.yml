@@ -1,0 +1,35 @@
+name: dist
+on:
+  push:
+      paths: ["src"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Rokit
+        uses: CompeyDev/setup-rokit@v0.1.2
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "noreply@github.com"
+
+      - name: Install
+        run: |
+          pesde install
+
+      - name: Build dist files
+        run: |
+          lune run build-npm
+
+          git add -A
+          if ! git diff-index --quiet HEAD --; then
+            echo "src changed!"
+            git commit -m "Update dist files"
+            git push origin main
+          fi

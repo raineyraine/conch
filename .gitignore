@@ -26,5 +26,5 @@ pkgs/_foreign_*
 todo
 
 # weird stuff so we can have the fork working with roblox-ts 
-!pkgs/**/dist
-!pkgs/**/dist/roblox_packages
+#!pkgs/**/dist
+#!pkgs/**/dist/roblox_packages

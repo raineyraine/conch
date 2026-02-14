@@ -1,15 +1,21 @@
-import type { AnalysisArgument, AnalysisResult } from "@rbxts/conch-language"
+import type {
+	AnalysisArgument,
+	AnalysisResult,
+} from "raineyraine-conch-language";
 
 export type Type<T = unknown> = {
-	readonly __brand_Type: T,
+	readonly __brand_Type: T;
 };
-export type TypeCtor<T = unknown> = (name?: string, description?: string) => Type<T>;
+export type TypeCtor<T = unknown> = (
+	name?: string,
+	description?: string,
+) => Type<T>;
 
 type RegisterData<T> = {
-	convert: (from: unknown) => T,
-	analysis: AnalysisArgument
-}
-type RegisterableType<T = unknown> = Type<T> & RegisterData<T>
+	convert: (from: unknown) => T;
+	analysis: AnalysisArgument;
+};
+type RegisterableType<T = unknown> = Type<T> & RegisterData<T>;
 
 type InferType<T extends Type> = T extends Type<infer U> ? U : never;
 type InferTypes<T extends Type[]> = {
@@ -18,111 +24,122 @@ type InferTypes<T extends Type[]> = {
 
 export type VarargType<T extends unknown[] = unknown[]> = {
 	readonly __brand_VarargType: T;
-}
+};
 // 💜 TypeScript
-type InferVarargType<T extends VarargType> = T extends VarargType<[...infer U]> ? [...U] : never;
+type InferVarargType<T extends VarargType> =
+	T extends VarargType<[...infer U]> ? [...U] : never;
 
-type Overload = { description: string, arguments: Type[] }
+type Overload = { description: string; arguments: Type[] };
 export type OverloadType<T extends Overload[] = Overload[]> = {
 	readonly __brand_OverloadType: T;
-}
+};
 
 export type User = {
-	id: string,
-	name: string,
-	player: Player | false,
+	id: string;
+	name: string;
+	player: Player | false;
 
-	disconnected: boolean,
-	dirty: boolean,
-	roles: string[],
+	disconnected: boolean;
+	dirty: boolean;
+	roles: string[];
 };
 
 export type CommandContext = {
-	executor: User,
-	invocation_id: number | false,
+	executor: User;
+	invocation_id: number | false;
 };
 
 /**
  * Executes the given text.
- * 
+ *
  * @description Outputs an error into the console if it's not enabled.
  */
 export function execute(src: string): void;
 /**
  * Quickly registers a command by only having to pass a function.
- * 
+ *
  * @description This doesn't add any analysis of any sort. This should only be reserved for temporary commands.
  */
-export function register_quick(name: string, fn: (...args: any[]) => unknown, ...permissions: string[]): void;
+export function register_quick(
+	name: string,
+	fn: (...args: any[]) => unknown,
+	...permissions: string[]
+): void;
 /**
  * Registers a new command.
- * 
+ *
  * @description Registers a given command with the provided description. This command is only visible to players who have the required permissions.
  */
 export function register<const T extends Type[], const V extends VarargType>(
 	name: string,
 	props: {
-		description?: string,
-		permissions: string[],
-		arguments: () => LuaTuple<[...T, V]>,
-		callback: (...arguments: [...InferTypes<T>, ...InferVarargType<V>]) => unknown,
-	}
+		description?: string;
+		permissions: string[];
+		arguments: () => LuaTuple<[...T, V]>;
+		callback: (
+			...arguments: [...InferTypes<T>, ...InferVarargType<V>]
+		) => unknown;
+	},
 ): void;
 /**
  * Registers a new command.
- * 
+ *
  * @description Registers a given command with the provided description. This command is only visible to players who have the required permissions.
  */
 export function register<const T extends Type[]>(
 	name: string,
 	props: {
-		description?: string,
-		permissions: string[],
-		arguments: () => LuaTuple<T>,
-		callback: (...arguments: InferTypes<T>) => unknown,
-	}
+		description?: string;
+		permissions: string[];
+		arguments: () => LuaTuple<T>;
+		callback: (...arguments: InferTypes<T>) => unknown;
+	},
 ): void;
 /**
  * Registers a new command.
- * 
+ *
  * @description Registers a given command with the provided description. This command is only visible to players who have the required permissions.
  */
 export function register<const T extends VarargType>(
 	name: string,
 	props: {
-		description?: string,
-		permissions: string[],
-		arguments: () => T,
-		callback: (...arguments: InferVarargType<T>) => unknown,
-	}
+		description?: string;
+		permissions: string[];
+		arguments: () => T;
+		callback: (...arguments: InferVarargType<T>) => unknown;
+	},
 ): void;
 /**
  * Registers a new command.
- * 
+ *
  * @description Registers a given command with the provided description. This command is only visible to players who have the required permissions.
  */
 export function register<const T extends Type>(
 	name: string,
 	props: {
-		description?: string,
-		permissions: string[],
-		arguments: () => T,
-		callback: (argument: InferType<T>) => unknown,
-	}
+		description?: string;
+		permissions: string[];
+		arguments: () => T;
+		callback: (argument: InferType<T>) => unknown;
+	},
 ): void;
 /**
  * Registers a new command.
- * 
+ *
  * @description Registers a given command with the provided description. This command is only visible to players who have the required permissions.
  */
 export function register<const T extends OverloadType>(
 	name: string,
 	props: {
-		description?: string,
-		permissions: string[],
-		arguments: () => T,
-		callback: (...arguments: T extends OverloadType<infer O> ? InferTypes<O[number]['arguments']> : never) => unknown,
-	}
+		description?: string;
+		permissions: string[];
+		arguments: () => T;
+		callback: (
+			...arguments: T extends OverloadType<infer O>
+				? InferTypes<O[number]["arguments"]>
+				: never
+		) => unknown;
+	},
 ): void;
 /**
  * Registers the `license`, `print`, `info`, `warn` and `error` commands.
@@ -134,28 +151,31 @@ export function register_default_commands(): void;
 export function initiate_default_lifecycle(): void;
 /**
  * Registers a type which can be replicated.
- * 
+ *
  * @description Types must be registered on both the server and client before the command using them is registered.
  */
 export function register_type<T>(
 	type: string,
-	data: RegisterData<T>
+	data: RegisterData<T>,
 ): TypeCtor<T>;
 /**
  * Returns if the user has the required permissions to use a command.
- * 
+ *
  * @description Returns true if the user either has all the permissions required or if the user has the super-user role.
  */
 export function has_permissions(user: User, ...permissions: string[]): boolean;
 /**
  * Sets the permissions associated with a role.
- * 
+ *
  * @description This overwrites the existing permissions of a role. You should only run this when you are initializing the server.
  */
-export function set_role_permissions(role: string, ...permissions: string[]): void;
+export function set_role_permissions(
+	role: string,
+	...permissions: string[]
+): void;
 /**
  * Gives the user the given tuple of roles.
- * 
+ *
  * @description Giving the user the `super-user` role gives them access to every command. This should only be reserved for players that are extremely trusted.
  */
 export function give_roles(user: User, ...roles: string[]): void;
@@ -169,7 +189,7 @@ export function remove_roles(user: User, ...roles: string[]): void;
 export function get_user(key: string | Player): User;
 /**
  * Sets a global variable on the command.
- * 
+ *
  * @description All globals must be valid identifiers. It should only include alphanumeric values, dashes and underscores.
  */
 export function set_var(global: string, value: unknown): void;
@@ -179,7 +199,7 @@ export function set_var(global: string, value: unknown): void;
 export function get_command_context(): CommandContext;
 /**
  * Logs to the user using this command.
- * 
+ *
  * @description This automatically logs to the user running the command.
  */
 export function log(
@@ -195,23 +215,29 @@ export function analyze(src: string, where: number): AnalysisResult;
  */
 export function on_command_run(
 	fn: (ctx: {
-		ok: boolean,
-		who: User,
-		command: string,
-		arguments: unknown[],
-		result: unknown[]
-	}) => void
+		ok: boolean;
+		who: User;
+		command: string;
+		arguments: unknown[];
+		result: unknown[];
+	}) => void,
 ): () => void;
 /**
  * Calls the given function whenever a player executes something.
  */
 export function on_execution(
-	fn: (player: Player, src: string) => void
+	fn: (player: Player, src: string) => void,
 ): () => void;
 
 export namespace args {
-	export function overload<const T extends Overload[]>(overloads: T): OverloadType<T>;
-	export function literal<const T>(literal: T, name?: string, description?: string): Type<T>;
+	export function overload<const T extends Overload[]>(
+		overloads: T,
+	): OverloadType<T>;
+	export function literal<const T>(
+		literal: T,
+		name?: string,
+		description?: string,
+	): Type<T>;
 
 	export const any: TypeCtor<any>;
 	export const string: TypeCtor<string>;
@@ -240,6 +266,14 @@ export namespace args {
 	export function optional<const T>(type: Type<T>): Type<T | undefined>;
 	export const opt: typeof optional;
 
-	export function enum_new<const T extends unknown[]>(options: T, name?: string, description?: string): RegisterableType<T[number]>;
-	export function enum_map<const V>(map: Record<string, V>, name?: string, description?: string): RegisterableType<V>;
+	export function enum_new<const T extends unknown[]>(
+		options: T,
+		name?: string,
+		description?: string,
+	): RegisterableType<T[number]>;
+	export function enum_map<const V>(
+		map: Record<string, V>,
+		name?: string,
+		description?: string,
+	): RegisterableType<V>;
 }

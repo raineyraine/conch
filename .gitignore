@@ -7,7 +7,7 @@
 **/node_modules/
 **/network/server.luau
 **/network/client.luau
-**/dist
+**/dist/
 **/default.project.json
 pkgs/_foreign_*
 !pkgs/conch_standalone/default.project.json
@@ -24,7 +24,3 @@ pkgs/_foreign_*
 **.rbxm
 
 todo
-
-# weird stuff so we can have the fork working with roblox-ts 
-#!pkgs/**/dist
-#!pkgs/**/dist/roblox_packages

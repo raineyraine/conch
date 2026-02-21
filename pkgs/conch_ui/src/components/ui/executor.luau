@@ -21,6 +21,7 @@ local source = vide.source
 local show = vide.show
 local effect = vide.effect
 local cleanup = vide.cleanup
+local action = vide.action
 
 local TOTAL_SUGGESTIONS = 10
 local AUTO_SCROLL_DELAY = 0.4
@@ -117,7 +118,10 @@ return component(function(p: {
 
 	local function move_down()
 		local analysis_result = p.analysis()
-		if #analysis_result.suggestions == 0 then
+		if
+			#analysis_result.suggestions == 0
+			and raw_text():find "\n" == nil
+		then
 			if history_n == 0 then history[history_n] = raw_text() end
 
 			history_n = math.clamp(history_n - 1, 0, #history)
@@ -125,17 +129,17 @@ return component(function(p: {
 			cursor_position(#raw_text() + 1)
 		else
 			selected_suggestion(
-				math.min(
-					selected_suggestion() + 1,
-					#p.filtered_suggestions()
-				)
+				math.min(selected_suggestion() + 1, #p.filtered_suggestions())
 			)
 		end
 	end
 
 	local function move_up()
 		local analysis_result = p.analysis()
-		if #analysis_result.suggestions == 0 then
+		if
+			#analysis_result.suggestions == 0
+			and raw_text():find "\n" == nil
+		then
 			if history_n == 0 then history[history_n] = raw_text() end
 
 			history_n = math.clamp(history_n + 1, 0, #history)
@@ -161,7 +165,7 @@ return component(function(p: {
 					task.wait()
 					continue
 				end
-				
+
 				if direction == "up" then
 					move_up()
 				else
@@ -179,11 +183,11 @@ return component(function(p: {
 		if input.KeyCode == Enum.KeyCode.Down then
 			move_down()
 			holding.down = true
-			start_auto_scroll("down")
+			start_auto_scroll "down"
 		elseif input.KeyCode == Enum.KeyCode.Up then
 			move_up()
 			holding.up = true
-			start_auto_scroll("up")
+			start_auto_scroll "up"
 		elseif
 			input.KeyCode == Enum.KeyCode.C
 			and input:IsModifierKeyDown(Enum.ModifierKey.Ctrl)
@@ -214,6 +218,8 @@ return component(function(p: {
 		end
 	end))
 
+	local value = source(nil :: GuiObject)
+
 	return background {
 		name = "Executor",
 
@@ -227,6 +233,8 @@ return component(function(p: {
 
 		changed("AbsolutePosition", absolute_position),
 
+		vide.action(value),
+
 		show(p.analysis, function()
 			return screen {
 				name = "Suggestion",
@@ -238,7 +246,14 @@ return component(function(p: {
 						return 9 * #t[#t] + 32
 					end,
 					y = function()
-						return suggestion_position().Y + absolute_position().Y
+						local bg = value()
+						if bg == nil then return 0 end
+
+						-- fixme: roblox doesn't seem to fire the GetPropertyChangedSignal
+						-- event for AbsolutePosition every time it changes, which
+						-- makes the location of the suggestions UI look funky.
+						-- for now, we'll just read the position directly.
+						return suggestion_position().Y + bg.AbsolutePosition.Y
 					end,
 					selected = selected_suggestion,
 					show_suggestions_from = show_suggestions_from,
@@ -267,7 +282,7 @@ return component(function(p: {
 		end, function()
 			return textbox {
 				ws = 1,
-				auto = "",
+				auto = "y",
 				h = 20,
 
 				text = raw_text,

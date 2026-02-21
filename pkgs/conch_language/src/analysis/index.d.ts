@@ -23,6 +23,37 @@ export interface TypeAnalysisInfo {
  */
 export type SimpleValue = number | string | boolean;
 
+/**
+ * External; this is a strange type that does not match any existing type.
+ */
+export interface StrangeType {
+	readonly kind: "strange";
+
+	readonly type: string;
+	readonly id: string;
+	readonly convert?: (input: unknown) => unknown;
+
+	readonly suggestions?: Type | ((text: string) => Array<Suggestion>);
+	readonly match?: Type | ((item: unknown) => boolean);
+	readonly exact_match?: Type | ((item: unknown) => boolean);
+}
+
+export type AnalysisArgument =
+	| {
+			kind: "literal";
+			name: string;
+			description?: string;
+			value: string | boolean;
+			optional: boolean;
+	  }
+	| {
+			kind: "argument";
+			name: string;
+			description?: string;
+			type: string;
+			unique_identifier: string;
+	  };
+
 export interface Suggestion {
 	readonly kind?: "expression" | "assign";
 	readonly replace?: vector;
@@ -36,25 +67,7 @@ export interface Suggestion {
  */
 export interface LiteralType {
 	readonly kind: "literal";
-	readonly value: string | boolean | number | undefined;
-}
-
-/**
- * External; this is a strange type that does not match any existing type.
- */
-export interface StrangeType {
-	readonly kind: "strange";
-
-	readonly type: string;
-	readonly id: string;
-	readonly convert?: (value: unknown) => unknown;
-
-	readonly suggestions:
-		| Type
-		| ((arg0: string) => Array<Suggestion>)
-		| undefined;
-	readonly match: Type | ((arg0: unknown) => boolean) | undefined;
-	readonly exact_match: Type | ((arg0: unknown) => boolean) | undefined;
+	readonly value: SimpleValue | undefined;
 }
 
 /**
@@ -78,7 +91,7 @@ export interface TableType {
 
 	readonly fields_metadata?: Map<
 		LiteralType,
-		{ readonly description?: string }
+		{ readonly description: string }
 	>;
 
 	readonly fields?: Map<LiteralType, Type>;
@@ -162,3 +175,16 @@ export function match_eval_value(
 	type: Type,
 	exact?: boolean,
 ): Type | undefined;
+export type AnalysisResult = {
+	result?: {
+		replace: vector;
+		suggestions: Suggestion[];
+		additional_info?: {
+			name: string;
+			description: string;
+			optional: boolean;
+			type: string;
+		};
+	};
+	issues: Issue[];
+};

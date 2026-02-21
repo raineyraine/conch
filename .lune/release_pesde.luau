@@ -152,7 +152,7 @@ local function generate_wally_release_files(path: string)
 	if pesde_toml.private then return end
 
 	-- release on pesde first
-	process.spawn("pesde", { "publish --yes" }, {
+	process.exec("pesde", { "publish --yes" }, {
 		cwd = path,
 		env = {},
 		shell = true,
@@ -341,11 +341,11 @@ local function link_npm_files(path: string)
 	if pesde_toml.private then return end
 
 	-- release on pesde first
-	-- process.spawn("pesde", { "publish --yes" }, {
-	-- 	cwd = path,
-	-- 	env = {},
-	-- 	shell = true,
-	-- })
+	process.exec("pesde", { "publish --yes" }, {
+		cwd = path,
+		env = {},
+		shell = true,
+	})
 
 	local lib_file_path = pesde_toml.target.lib
 
@@ -558,24 +558,26 @@ for _, path in get_order() do
 end
 
 process.exec("pesde", { "i" })
+process.exec("pesde", { "publish --yes" })
 
-for _, path in get_order() do
-	print("Generating release for", path)
-	-- generate_wally_release_files(path)
-	-- local status = process.spawn("wally", { "publish" }, {
-	-- 	cwd = path,
-	-- 	env = {},
-	-- 	shell = true,
-	-- })
-	-- cleanup_files(path)
-	-- if status.ok == false then error(status.stderr) end
+-- for _, path in get_order() do
+-- 	print("Generating release for", path)
 
-	link_npm_files(path)
-	-- local status = process.spawn("pnpm", { "publish", "--access=public" }, {
-	-- 	cwd = path,
-	-- 	env = {},
-	-- 	shell = true,
-	-- })
-	-- cleanup_files(path)
-	-- if status.ok == false then error(status.stderr) end
-end
+-- 	-- generate_wally_release_files(path)
+-- 	-- local status = process.exec("wally", { "publish" }, {
+-- 	-- 	cwd = path,
+-- 	-- 	env = {},
+-- 	-- 	shell = true,
+-- 	-- })
+-- 	-- cleanup_files(path)
+-- 	-- if status.ok == false then error(status.stderr) end
+
+-- 	-- link_npm_files(path)
+-- 	-- local status = process.exec("pnpm", { "publish", "--access=public" }, {
+-- 	-- 	cwd = path,
+-- 	-- 	env = {},
+-- 	-- 	shell = true,
+-- 	-- })
+-- 	-- cleanup_files(path)
+-- 	-- if status.ok == false then error(status.stderr) end
+-- end

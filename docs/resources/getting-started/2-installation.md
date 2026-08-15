@@ -9,8 +9,8 @@ This goes over how to start setting up conch.
 In your `wally.toml`, add the following lines to your dependencies.
 
 ```toml
-conch = "alicesaidhi/conch@0.3.1"
-conch_ui = "alicesaidhi/conch-ui@0.3.1"
+conch = "alicesaidhi/conch@0.4.0"
+conch_ui = "alicesaidhi/conch-ui@0.4.0"
 ```
 
 ==pesde
@@ -32,3 +32,7 @@ You can drag the rbxm into Studio. You should place your packages somewhere wher
 soon:tm:
 
 :::
+
+Additionally, conch comes with a plugin which allows for storing command history across studio sessions within the same place, which can be installed here.
+
+<Button href="https://github.com/alicesaidhi/conch/releases/latest/download/plugin.rbxm" text="Download latest plugin"></Button>

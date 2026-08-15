@@ -14,14 +14,14 @@ You'll need to pass the arguments that you want to pass to the command, the perm
 
 ```luau
 conch.register("kick", {
-	permissions = { "kick-player" },
-	arguments = function()
-		return conch.args.player(), conch.args.string()
-	end,
+    permissions = { "kick-player" },
+    arguments = function()
+        return conch.args.player(), conch.args.string()
+    end,
 
-	callback = function(player, reason) -- typechecked!
-		player:Kick(reason)
-	end
+    callback = function(player, reason) -- typechecked!
+        player:Kick(reason)
+    end
 })
 ```
 
@@ -29,17 +29,17 @@ We can also optionally add information to what the arguments and command actuall
 
 ```luau
 conch.register("kick", {
-	description = "Kicks the given player from the server",
-	permissions = { "kick-player" },
-	arguments = function()
-		return
-			conch.args.player("player", "The player that should be kicked from the server"),
-			conch.args.string("reason", "The reason why the player has been kicked from the user.")
-	end,
+    description = "Kicks the given player from the server",
+    permissions = { "kick-player" },
+    arguments = function()
+        return
+            conch.args.player("player", "The player that should be kicked from the server"),
+            conch.args.string("reason", "The reason why the player has been kicked from the user.")
+    end,
 
-	callback = function(player, reason) -- typechecked!
-		player:Kick(reason)
-	end
+    callback = function(player, reason) -- typechecked!
+        player:Kick(reason)
+    end
 })
 ```
 
@@ -49,8 +49,8 @@ It's possible to also register commands quickly, by using the `conch.register_qu
 
 ```luau
 conch.register_quick("kick", function(player_name, reason)
-	local player = Players:FindFirstChild(player_name)
-	if not player then error(`{player_name} is not a real player`) end
-	player:Kick(reason)
+    local player = Players:FindFirstChild(player_name)
+    if not player then error(`{player_name} is not a real player`) end
+    player:Kick(reason)
 end, "kick-player")
 ```

@@ -10,6 +10,7 @@ local function select_color(key: keyof<typeof(catppuccin.frappe)>): () -> Color3
 end
 
 return {
+	catpuccin = catppuccin,
 	selected = selected_theme,
 	select_color = select_color,
 

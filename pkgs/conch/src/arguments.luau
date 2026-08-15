@@ -6,6 +6,13 @@ local types = require "./types"
 
 local function noop(v: unknown): any return v end
 
+local function literal<T>(value: T): T
+	return {
+		kind = "literal",
+		value = value,
+	}
+end
+
 local function wrap_if_not(value)
 	return if type(value) == "table" then value else { value }
 end
@@ -228,6 +235,23 @@ local function enum_from_array<T>(
 
 		return key_map
 	end, name, description)
+end
+
+local function static_enum_from_array<T>(
+	t: { T },
+	name: string?,
+	description: string?
+): types.TypeRegistrator<T>
+	const fields: {} = {}
+
+	for i, value in t do
+		fields[i] = literal(value)
+	end
+
+	return wrap_type({
+		kind = "union",
+		fields = fields,
+	}, name, description)
 end
 
 -- base types
@@ -843,13 +867,6 @@ local function unwrap_type(
 	end
 end
 
-local function literal<T>(value: T): T
-	return {
-		kind = "literal",
-		value = value,
-	}
-end
-
 local function opt<T>(arg: T): T?
 	local type = arg :: language.CommandArgument
 
@@ -993,6 +1010,8 @@ local args = {
 
 	enum_from_array = enum_from_array,
 	enum_from_map = enum_from_map,
+
+	static_enum_from_array = static_enum_from_array,
 
 	opt = opt,
 	variadic = variadic,

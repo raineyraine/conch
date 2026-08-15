@@ -263,6 +263,7 @@ local function from_arguments_or_overload(
 	args: {
 		language.CommandArgument
 		| arguments.Overload
+		| language.IntersectionType
 	}
 ): language.Type
 	local first = args[1]
@@ -283,6 +284,16 @@ local function from_arguments_or_overload(
 			kind = "intersection",
 			fields = overloads,
 		}
+	elseif #args == 1 and first and first.kind == "intersection" then
+		for i, command in first.fields do
+			assert(
+				command.kind == "command",
+				`expected command, got {command.kind}`
+			)
+			fix_arguments(command.arguments)
+		end
+
+		return first
 	else
 		fix_arguments(args)
 		return {

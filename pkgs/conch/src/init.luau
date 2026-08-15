@@ -78,15 +78,6 @@ local function get_user(key: Player | string)
 	end
 end
 
-local function disconnect_user_for_player(player: Player)
-	local key = user.obtain_user_key(player, player.DisplayName)
-	local self = state.users[key]
-
-	if not self then return end
-
-	disconnect_user(self)
-end
-
 local function invoke_server_command(
 	player: Player,
 	data: net.InvokeCommandPacket
@@ -153,6 +144,16 @@ local function on_ready(player: Player)
 	})
 
 	resend_new_commands(get_user(player))
+end
+
+local function disconnect_user_for_player(player: Player)
+	local key = user.obtain_user_key(player, player.DisplayName)
+	local self = state.users[key]
+
+	if not self then return end
+	already_ready[player] = nil
+
+	disconnect_user(self)
 end
 
 local function initiate_default_lifecycle()

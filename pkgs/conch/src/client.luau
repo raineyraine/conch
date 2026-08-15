@@ -80,7 +80,7 @@ local function update_role_permissions(data: net.UpdateRolePacket)
 	end
 end
 
--- given a language type, fills al types automatically
+-- given a language type, fills all strange types automatically
 local function fill_types(data: language.Type?)
 	if not data then
 		return
@@ -128,12 +128,18 @@ local function register_command(data: net.RegisterCommandPacket)
 	-- warn("NEW SERVER COMMAND", data.name)
 	fill_types(data.type)
 
-	assert(data.type.kind == "command")
+	assert(data.type.kind == "command" or data.type.kind == "intersection")
 
 	console.register_command(data.name, {
 		description = data.description,
 		permissions = data.permissions,
-		arguments = function() return unpack(data.type.arguments) end :: any,
+		arguments = function()
+			if data.type.kind == "command" then
+				return unpack(data.type.arguments)
+			elseif data.type.kind == "intersection" then
+				return data.type
+			end
+		end :: any,
 
 		callback = function(...)
 			local thread = coroutine.running()
